@@ -26,12 +26,12 @@ update() {
 
 # Function to edit server configuration
 modify_server_config () {
-  if [ -f "${REFORGER_PATH}/config/${SERVER_CONFIG_FILE}" ]; then
+  if [ ! -f "${REFORGER_PATH}/config/${SERVER_CONFIG_FILE}" ]; then
     echo "$(timestamp) WARN: Server configuration file not found at ${REFORGER_PATH}/config/${SERVER_CONFIG_FILE}"
     echo "$(timestamp) INFO: Creating new server configuration file"
     cp /home/steam/example_server_config.json "${REFORGER_PATH}/config/${SERVER_CONFIG_FILE}"
   else
-    echo "$(timestamp) INFO: Server configuration file not at ${REFORGER_PATH}/config/${SERVER_CONFIG_FILE}"
+    echo "$(timestamp) INFO: Server configuration file found at ${REFORGER_PATH}/config/${SERVER_CONFIG_FILE}"
   fi
 
   # Path to server configuration json file
