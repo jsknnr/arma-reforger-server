@@ -35,115 +35,115 @@ spec:
         {{- with .Values.config }}
         {{- if .publicAddress }}
           - name: PUBLIC_ADDRESS
-            value: "{{ .publicAddress }}"
+            value: {{ .publicAddress | squote}}
         {{- end }}
         {{- if .bindAddress }}
           - name: BIND_ADDRESS
-            value: "{{ .bindAddress }}"
+            value: {{ .bindAddress | squote }}
         {{- end }}
         {{- if .gamePort }}
           - name: GAME_PORT
-            value: "{{ .gamePort }}"
+            value: {{ .gamePort | squote }}
         {{- end }}
         {{- if .rconPort }}
           - name: RCON_PORT
-            value: "{{ .rconPort }}"
+            value: {{ .rconPort | squote }}
         {{- end }}
         {{- if .rconPassword }}
           - name: RCON_PASSWORD
-            value: "{{ .rconPassword }}"
+            value: {{ .rconPassword }}
         {{- end }}
         {{- if .rconAddress }}
           - name: RCON_ADDRESS
-            value: "{{ .rconAddress }}"
+            value: {{ .rconAddress | squote }}
         {{- end }}
         {{- if .rconBlacklist }}
           - name: RCON_BLACKLIST
-            value: "{{ .rconBlacklist }}"
+            value: {{ .rconBlacklist }}
         {{- end }}
         {{- if .rconWhitelist }}
           - name: RCON_WHITELIST
-            value: "{{ .rconWhitelist }}"
+            value: {{ .rconWhitelist }}
         {{- end }}
         {{- if .a2sPort }}
           - name: A2S_PORT
-            value: "{{ .a2sPort }}"
+            value: {{ .a2sPort | squote }}
         {{- end }}
         {{- if .serverConfigFile }}
           - name: SERVER_CONFIG_FILE
-            value: "{{ .serverConfigFile }}"
+            value: {{ .serverConfigFile }}
         {{- end }}
         {{- if .maxFps }}
           - name: MAX_FPS
-            value: "{{ .maxFps }}"
+            value: {{ .maxFps | squote }}
         {{- end }}
         {{- if .maxPlayers }}
           - name: MAX_PLAYERS
-            value: "{{ .maxPlayers }}"
+            value: {{ .maxPlayers | squote }}
         {{- end }}
         {{- if .serverName }}
           - name: SERVER_NAME
-            value: "{{ .serverName }}"
+            value: {{ .serverName }}
         {{- end }}
         {{- if .serverPassword }}
           - name: SERVER_PASSWORD
-            value: "{{ .serverPassword }}"
+            value: {{ .serverPassword | squote }}
         {{- end }}
         {{- if .admins }}
           - name: ADMINS
-            value: "{{ .admins }}"
+            value: {{ .admins }}
         {{- end }}
         {{- if .adminPassword }}
           - name: ADMIN_PASSWORD
-            value: "{{ .adminPassword }}"
+            value: {{ .adminPassword | squote }}
         {{- end }}
         {{- if .scenarioId }}
           - name: SCENARIO_ID
-            value: "{{ .scenarioId }}"
+            value: {{ .scenarioId | squote }}
         {{- end }}
         {{- if .visible }}
           - name: VISIBLE
-            value: "{{ .visible }}"
+            value: {{ .visible | squote}}
         {{- end }}
         {{- if .crossplatform }}
           - name: CROSSPLATFORM
-            value: "{{ .crossplatform }}"
+            value: {{ .crossplatform | squote }}
         {{- end }}
         {{- if .supportedPlatforms }}
           - name: SUPPORTED_PLATFORMS
-            value: "{{ .supportedPlatforms }}"
+            value: {{ .supportedPlatforms }}
         {{- end }}
         {{- if .serverMaxViewDistance }}
           - name: SERVER_MAX_VIEW_DISTANCE
-            value: "{{ .serverMaxViewDistance }}"
+            value: {{ .serverMaxViewDistance | squote }}
         {{- end }}
         {{- if .networkViewDistance }}
           - name: NETWORK_VIEW_DISTANCE
-            value: "{{ .networkViewDistance }}"
+            value: {{ .networkViewDistance | squote }}
         {{- end }}
         {{- if .disableThirdPerson }}
           - name: DISABLE_THIRD_PERSON
-            value: "{{ .disableThirdPerson }}"
+            value: {{ .disableThirdPerson | squote}}
         {{- end }}
         {{- if .fastValidation }}
           - name: FAST_VALIDATION
-            value: "{{ .fastValidation }}"
+            value: {{ .fastValidation | squote }}
         {{- end }}
         {{- if .battleye }}
           - name: BATTLEYE
-            value: "{{ .battleye }}"
+            value: {{ .battleye | squote }}
         {{- end }}
         {{- if .modsJsonB64 }}
           - name: MODS_JSON_B64
-            value: "{{ .modsJsonB64 }}"
+            value: {{ .modsJsonB64 | squote}}
         {{- end }}
         {{- if .queueMaxSize }}
           - name: QUEUE_MAX_SIZE
-            value: "{{ .queueMaxSize }}"
+            value: {{ .queueMaxSize | squote}}
         {{- end }}
         {{- if .additionalParameters }}
           - name: ADDITIONAL_PARAMETERS
-            value: "{{ .additionalParameters }}"
+            value: {{ .additionalParameters | squote }}
         {{- end }}
         {{- end }}
         ports:
