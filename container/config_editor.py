@@ -64,17 +64,65 @@ def update_config_file(file_path: str, key: str, new_value: str) -> None:
             json.dump(config, file, indent=4)
 
         print(f"Updated '{key}' in '{file_path}' to: {new_value}")
-        sys.exit(0)
 
     except Exception as error:
         print(f"ERROR updating key '{key}' at '{file_path}' due to: {error}")
         sys.exit(1)
 
+def __recursive_dict_update(data_dict):
+    """
+    Recursively update a nested dictionary, removing any keys that contain empty strings or None values.
+    :param dict: The dictionary to update
+    :return: The updated dictionary
+    """
+    for key, value in list(data_dict.items()):
+        if isinstance(value, dict):
+            data_dict[key] = __recursive_dict_update(value)
+        elif value in ["", None]:
+            del data_dict[key]
+    return data_dict
+
+def sanitize_config(file_path: str) -> None:
+    """
+    Sanitize the configuration file by removing any keys that contain empty stings or None values.
+    :param file_path: The path to the configuration file
+    :return: None
+    """
+    try:
+        with open(file_path, 'r') as file:
+            config = json.load(file)
+
+        # Remove keys with empty strings or None values
+        sanitized_config = __recursive_dict_update(config)
+
+        # Final pass for rcon key because it's a pain in the ass
+        if not sanitized_config['rcon'].get('password'):
+            # Remove the rcon key if password is empty
+            del sanitized_config['rcon']
+
+        # Write the sanitized configuration back to the file
+        with open(file_path, 'w') as file:
+            json.dump(sanitized_config, file, indent=4)
+
+        print(f"Sanitized '{file_path}'")
+
+    except Exception as error:
+        print(f"ERROR sanitizing '{file_path}' due to: {error}")
+        sys.exit(1)
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Update configuration files')
     parser.add_argument('-c', '--config', type=str, required=True, help='The path to the configuration file')
-    parser.add_argument('-k', '--key', type=str, required=True, help='The key to update (use dot notation for nested keys)')
-    parser.add_argument('-v', '--value', type=str, required=True, help='The new value for the key')
+    parser.add_argument('-k', '--key', type=str, help='The key to update (use dot notation for nested keys)')
+    parser.add_argument('-v', '--value', type=str, help='The new value for the key')
+    parser.add_argument('-s', '--sanitize', action='store_true', help='Sanitize the configuration file by removing empty keys')
     args = parser.parse_args()
 
-    update_config_file(args.config, args.key, args.value)
+    if args.sanitize:
+        sanitize_config(args.config)
+    elif args.key and args.value:
+        update_config_file(args.config, args.key, args.value)
+    else:
+        print("ERROR: Please provide a configuration file, key, and value to update or a configuration file and the sanitize flag.")
+        parser.print_help()
+        sys.exit(1)

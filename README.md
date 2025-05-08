@@ -29,7 +29,7 @@ Defaults will be used if not specified.
 | RCON_WHITELIST | A comma separated list of commands that can be executed, and no other command is allowed | None | False |
 | A2S_PORT | Steam Query UDP port on which game listens to A2S requests | 17777 | False |
 | SERVER_CONFIG_FILE | Full name of server config json file (e.g. ServerConfig.json) If the file does not exist it will be created | "ServerConfig.json" | False |
-| MAX_FPS | Sets maximum FPS of the server, useful for performance tuning | 30 | False |
+| MAX_FPS | Sets maximum FPS of the server, useful for performance tuning | 60 | False |
 | MAX_PLAYERS | Set the maximum amount of players on the server (max 128) | 64 | False |
 | SERVER_NAME | The name of the server | "Reforger Server" | False |
 | SERVER_PASSWORD | Password to join teh server | None | False |
@@ -40,7 +40,6 @@ Defaults will be used if not specified.
 | CROSSPLATFORM | If set to true, automatically adds "PLATFORM_PC", "PLATFORM_XBL" and "PLATFORM_PSN" to supportedPlatforms if they are missing; does nothing if set to false. | True | False |
 | SUPPORTED_PLATFORMS | Comma separated list of platforms which the server accepts, allowing crossplay. Note, PSN does not currently support mods | "PLATFORM_PC,PLATFORM_XBL,PLATFORM_PSN" | False |
 | SERVER_MAX_VIEW_DISTANCE | number value, range 500..10000 | 1600 | False |
-| SERVER_MIN_GRASS_DISTANCE | Minimum grass distance in meters. If set to 0 no distance is forced upon clients. Range 0/50..150 | 0 | False |
 | NETWORK_VIEW_DISTANCE | Maximum network streaming range of replicated entities. range 500..5000 |  1500 | False |
 | DISABLE_THIRD_PERSON | Force clients to use the first-person view. | False | False |
 | FAST_VALIDATION | Validation of map entities and components loaded on client when it joins, ensuring things match with initial server state. | True | False |
@@ -48,6 +47,7 @@ Defaults will be used if not specified.
 | QUEUE_MAX_SIZE | Sets maximum size of how many people can be at one time in join queue to the server. Range 0..50 (0 is disabled) | 0 | False |
 | MODS_JSON_FILE | Full name of mods json file (e.g. MyModList.json) that contains all the mods for the server. Do not define if using MODS_JSON_B64. If using this setting, you must mount your file to /home/steam/reforger/config in the container. | None | False |
 | MODS_JSON_B64 | Advanced option. Base64 encoded string representation of a mods json file. Useful if you don't want to mount the file. Do not define if using MODS_JSON_FILE. This is the only option when using Kubernetes. | None | False |
+| ADDITIONAL_PARAMETERS | Additional startup parameters to pass on server startup. Format as single string with spaces between each parameter | None | False |
 
 ## Usage
 
@@ -94,8 +94,8 @@ docker run \
   --env=ADMIN_PASSWORD='AdminPleaseChangeMe' \
   --env=GAME_PORT='2001' \ # Not necessary if you do not change the default, otherwise match publish port
   --env=A2S_PORT='17777' \ # Not necessary if you do not change the default, otherwise match publish port
-  --env=RCON_PORT='19999' \ # Not necessary if you do not change the default, otherwise match publish port
-  --env=RCON_PASSWORD='RCONPleaseChangeMe' \ # Only necessary if you want to enable RCON
+  --env=RCON_PORT='19999' \ 
+  --env=RCON_PASSWORD='RCONPleaseChangeMe' \ 
   sknnr/arma-reforger-server:latest
 ```
 
