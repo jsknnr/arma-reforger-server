@@ -51,7 +51,7 @@ spec:
         {{- end }}
         {{- if .rconPassword }}
           - name: RCON_PASSWORD
-            value: {{ .rconPassword }}
+            value: {{ .rconPassword | squote }}
         {{- end }}
         {{- if .rconAddress }}
           - name: RCON_ADDRESS
@@ -59,11 +59,11 @@ spec:
         {{- end }}
         {{- if .rconBlacklist }}
           - name: RCON_BLACKLIST
-            value: {{ .rconBlacklist }}
+            value: {{ .rconBlacklist | squote }}
         {{- end }}
         {{- if .rconWhitelist }}
           - name: RCON_WHITELIST
-            value: {{ .rconWhitelist }}
+            value: {{ .rconWhitelist | squote }}
         {{- end }}
         {{- if .a2sPort }}
           - name: A2S_PORT
@@ -71,7 +71,7 @@ spec:
         {{- end }}
         {{- if .serverConfigFile }}
           - name: SERVER_CONFIG_FILE
-            value: {{ .serverConfigFile }}
+            value: {{ .serverConfigFile | squote }}
         {{- end }}
         {{- if .maxFps }}
           - name: MAX_FPS
@@ -83,7 +83,7 @@ spec:
         {{- end }}
         {{- if .serverName }}
           - name: SERVER_NAME
-            value: {{ .serverName }}
+            value: {{ .serverName | squote }}
         {{- end }}
         {{- if .serverPassword }}
           - name: SERVER_PASSWORD
@@ -91,7 +91,7 @@ spec:
         {{- end }}
         {{- if .admins }}
           - name: ADMINS
-            value: {{ .admins }}
+            value: {{ .admins | squote }}
         {{- end }}
         {{- if .adminPassword }}
           - name: ADMIN_PASSWORD
@@ -111,7 +111,7 @@ spec:
         {{- end }}
         {{- if .supportedPlatforms }}
           - name: SUPPORTED_PLATFORMS
-            value: {{ .supportedPlatforms }}
+            value: {{ .supportedPlatforms | squote }}
         {{- end }}
         {{- if .serverMaxViewDistance }}
           - name: SERVER_MAX_VIEW_DISTANCE
