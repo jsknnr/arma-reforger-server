@@ -1,0 +1,82 @@
+FROM debian:12-slim
+
+ARG STEAMCMD_URL="https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz"
+ARG CONTAINER_UID=10000
+ARG CONTAINER_GID=10000
+
+ENV DEBIAN_FRONTEND="noninteractive"
+ENV STEAMCMD_PATH="/home/steam/steamcmd"
+ENV STEAM_SDK64_PATH="/home/steam/.steam/sdk64"
+ENV STEAM_APP_ID=1874900
+ENV REFORGER_PATH="/home/steam/reforger"
+
+ENV PUBLIC_ADDRESS=""
+ENV BIND_ADDRESS="0.0.0.0"
+ENV GAME_PORT=2001
+ENV RCON_PORT=19999
+ENV RCON_PASSWORD=""
+ENV RCON_ADDRESS="0.0.0.0"
+ENV RCON_BLACKLIST=""
+ENV RCON_WHITELIST=""
+ENV A2S_PORT=17777
+ENV SERVER_CONFIG_FILE="ServerConfig.json"
+ENV MAX_FPS=30
+ENV MAX_PLAYERS=64
+ENV SERVER_NAME="Reforger Server"
+ENV SERVER_PASSWORD=""
+ENV ADMINS=""
+ENV ADMIN_PASSWORD=""
+ENV SCENARIO_ID="{ECC61978EDCC2B5A}Missions/23_Campaign.conf"
+ENV VISIBLE=true
+ENV CROSSPLATFORM=true
+ENV SUPPORTED_PLATFORMS="PLATFORM_PC,PLATFORM_XBL,PLATFORM_PSN"
+ENV SERVER_MAX_VIEW_DISTANCE=1600
+ENV SERVER_MIN_GRASS_DISTANCE=0
+ENV NETWORK_VIEW_DISTANCE=1500
+ENV DISABLE_THIRD_PERSON=false
+ENV FAST_VALIDATION=true
+ENV BATTLEYE=true
+ENV MODS_JSON_FILE=""
+ENV MODS_JSON_B64=""
+ENV QUEUE_MAX_SIZE=0
+
+RUN groupadd -g ${CONTAINER_GID} steam \
+    && useradd -g ${CONTAINER_GID} -u ${CONTAINER_UID} -m steam \
+    && dpkg --add-architecture i386 \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
+        ca-certificates \
+        curl \
+        lib32gcc-s1 \
+        python3.11 \
+        locales \
+        vim \
+    && ln -s /usr/bin/python3.11 /usr/bin/python3 \
+    && echo 'LANG="en_US.UTF-8"' > /etc/default/locale \
+    && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
+    && locale-gen \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean \
+    && apt-get autoremove -y
+
+USER steam
+
+COPY entrypoint.sh /home/steam/entrypoint.sh
+COPY config_editor.py /home/steam/config_editor.py
+COPY example_server_config.json /home/steam/example_server_config.json
+
+RUN mkdir "${REFORGER_PATH}" \
+    && mkdir "${REFORGER_PATH}/config" \
+    && mkdir "${REFORGER_PATH}/workshop" \
+    && mkdir "${REFORGER_PATH}/profile" \
+    && mkdir "${STEAMCMD_PATH}" \
+    && mkdir -p "${STEAM_SDK64_PATH}" \
+    && curl -sqL "${STEAMCMD_URL}" | tar zxvf - -C "${STEAMCMD_PATH}" \
+    && chmod +x "${STEAMCMD_PATH}/steamcmd.sh" \
+    && "${STEAMCMD_PATH}/steamcmd.sh" +quit \
+    && mkdir -p "${STEAM_SDK64_PATH}" \
+    && cp "${STEAMCMD_PATH}/linux64/steamclient.so" "${STEAM_SDK64_PATH}/steamclient.so"
+
+WORKDIR /home/steam
+
+CMD ["/home/steam/entrypoint.sh"]

@@ -1,0 +1,168 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ .Chart.Name }}"
+  labels:
+    app: "{{ .Chart.Name }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "{{ .Chart.Name }}"
+      release: "{{ .Release.Name }}"
+  template:
+    metadata:
+      labels:
+        app: "{{ .Chart.Name }}"
+        release: "{{ .Release.Name }}"
+    spec:
+      securityContext:
+        runAsUser: 10000
+        runAsGroup: 10000
+        fsGroup: 10000
+      containers:
+      - name: "{{ .Chart.Name }}"
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        env:
+        {{- with .Values.config }}
+        {{- if .publicAddress }}
+          - name: PUBLIC_ADDRESS
+            value: "{{ .publicAddress }}"
+        {{- end }}
+        {{- if .bindAddress }}
+          - name: BIND_ADDRESS
+            value: "{{ .bindAddress }}"
+        {{- end }}
+        {{- if .gamePort }}
+          - name: GAME_PORT
+            value: "{{ .gamePort }}"
+        {{- end }}
+        {{- if .rconPort }}
+          - name: RCON_PORT
+            value: "{{ .rconPort }}"
+        {{- end }}
+        {{- if .rconPassword }}
+          - name: RCON_PASSWORD
+            value: "{{ .rconPassword }}"
+        {{- end }}
+        {{- if .rconAddress }}
+          - name: RCON_ADDRESS
+            value: "{{ .rconAddress }}"
+        {{- end }}
+        {{- if .rconBlacklist }}
+          - name: RCON_BLACKLIST
+            value: "{{ .rconBlacklist }}"
+        {{- end }}
+        {{- if .rconWhitelist }}
+          - name: RCON_WHITELIST
+            value: "{{ .rconWhitelist }}"
+        {{- end }}
+        {{- if .a2sPort }}
+          - name: A2S_PORT
+            value: "{{ .a2sPort }}"
+        {{- end }}
+        {{- if .serverConfigFile }}
+          - name: SERVER_CONFIG_FILE
+            value: "{{ .serverConfigFile }}"
+        {{- end }}
+        {{- if .maxFps }}
+          - name: MAX_FPS
+            value: "{{ .maxFps }}"
+        {{- end }}
+        {{- if .maxPlayers }}
+          - name: MAX_PLAYERS
+            value: "{{ .maxPlayers }}"
+        {{- end }}
+        {{- if .serverName }}
+          - name: SERVER_NAME
+            value: "{{ .serverName }}"
+        {{- end }}
+        {{- if .serverPassword }}
+          - name: SERVER_PASSWORD
+            value: "{{ .serverPassword }}"
+        {{- end }}
+        {{- if .admins }}
+          - name: ADMINS
+            value: "{{ .admins }}"
+        {{- end }}
+        {{- if .adminPassword }}
+          - name: ADMIN_PASSWORD
+            value: "{{ .adminPassword }}"
+        {{- end }}
+        {{- if .scenarioId }}
+          - name: SCENARIO_ID
+            value: "{{ .scenarioId }}"
+        {{- end }}
+        {{- if .visible }}
+          - name: VISIBLE
+            value: "{{ .visible }}"
+        {{- end }}
+        {{- if .crossplatform }}
+          - name: CROSSPLATFORM
+            value: "{{ .crossplatform }}"
+        {{- end }}
+        {{- if .supportedPlatforms }}
+          - name: SUPPORTED_PLATFORMS
+            value: "{{ .supportedPlatforms }}"
+        {{- end }}
+        {{- if .serverMaxViewDistance }}
+          - name: SERVER_MAX_VIEW_DISTANCE
+            value: "{{ .serverMaxViewDistance }}"
+        {{- end }}
+        {{- if .serverMinGrassDistance }}
+          - name: SERVER_MIN_GRASS_DISTANCE
+            value: "{{ .serverMinGrassDistance }}"
+        {{- end }}
+        {{- if .networkViewDistance }}
+          - name: NETWORK_VIEW_DISTANCE
+            value: "{{ .networkViewDistance }}"
+        {{- end }}
+        {{- if .disableThirdPerson }}
+          - name: DISABLE_THIRD_PERSON
+            value: "{{ .disableThirdPerson }}"
+        {{- end }}
+        {{- if .fastValidation }}
+          - name: FAST_VALIDATION
+            value: "{{ .fastValidation }}"
+        {{- end }}
+        {{- if .battleye }}
+          - name: BATTLEYE
+            value: "{{ .battleye }}"
+        {{- end }}
+        {{- if .modsJsonB64 }}
+          - name: MODS_JSON_B64
+            value: "{{ .modsJsonB64 }}"
+        {{- end }}
+        {{- if .queueMaxSize }}
+          - name: QUEUE_MAX_SIZE
+            value: "{{ .queueMaxSize }}"
+        {{- end }}
+        {{- end }}
+        ports:
+        - name: game
+          containerPort: {{ .Values.config.gamePort | int }}
+          protocol: UDP
+        - name: rcon
+          containerPort: {{ .Values.config.rconPort | int }}
+          protocol: TCP
+        - name: a2s
+          containerPort: {{ .Values.config.a2sPort | int }}
+          protocol: UDP
+        volumeMounts:
+        - name: data
+          mountPath: /home/steam/reforger
+        securityContext:
+          allowPrivilegeEscalation: false
+          
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: "{{ .Chart.Name }}-data"

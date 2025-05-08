@@ -1,0 +1,50 @@
+{
+	"bindAddress": "",
+	"bindPort": 0,
+	"publicAddress": "",
+	"publicPort": 0,
+	"a2s": {
+		"address": "",
+		"port": 0
+	},
+	"rcon": {
+		"address": "",
+		"port": 0,
+		"password": "",
+		"permission": "monitor",
+		"blacklist": [],
+		"whitelist": []
+	},
+	"game": {
+		"name": "",
+		"password": "",
+		"passwordAdmin": "",
+		"admins" : [],
+		"scenarioId": "",
+		"maxPlayers": 0,
+		"visible": true,
+		"crossPlatform": true,
+		"supportedPlatforms": [
+			"PLATFORM_PC",
+			"PLATFORM_XBL",
+			"PLATFORM_PSN"
+		],
+		"gameProperties": {
+			"serverMaxViewDistance": 1600,
+			"serverMinGrassDistance": 0,
+			"networkViewDistance": 1500,
+			"disableThirdPerson": false,
+			"fastValidation": true,
+			"battlEye": true,
+			"VONDisableUI": false,
+			"VONDisableDirectSpeechUI": false,
+			"VONCanTransmitCrossFaction": false
+		},
+		"mods": []
+	},
+    "operating": {
+        "joinQueue": {
+            "maxSize": 30
+        }
+    }
+}
