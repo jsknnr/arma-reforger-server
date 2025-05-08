@@ -24,6 +24,7 @@ Defaults will be used if not specified.
 | BIND_ADDRESS | IP address to which the server socket will be bound | "0.0.0.0" | False |
 | GAME_PORT | UDP port to which the server socket will be bound | 2001 | False |
 | RCON_PORT | RCON protocol TCP port on which the game listens on | 19999 | False |
+| RCON_ADDRESS | IP adadress that RCON will bind to | "0.0.0.0" | False |
 | RCON_PASSWORD | is required for RCON to start, no spaces, atleast 3 characters long | None | False |
 | RCON_BLACKLIST | A comma separated list of commands excluded from execution | None | False |
 | RCON_WHITELIST | A comma separated list of commands that can be executed, and no other command is allowed | None | False |
