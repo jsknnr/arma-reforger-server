@@ -91,7 +91,7 @@ spec:
         {{- end }}
         {{- if .admins }}
           - name: ADMINS
-            value: {{ .admins | quote }}
+            value: "{{ .admins }}"
         {{- end }}
         {{- if .adminPassword }}
           - name: ADMIN_PASSWORD
