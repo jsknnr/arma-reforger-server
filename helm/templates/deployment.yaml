@@ -117,10 +117,6 @@ spec:
           - name: SERVER_MAX_VIEW_DISTANCE
             value: "{{ .serverMaxViewDistance }}"
         {{- end }}
-        {{- if .serverMinGrassDistance }}
-          - name: SERVER_MIN_GRASS_DISTANCE
-            value: "{{ .serverMinGrassDistance }}"
-        {{- end }}
         {{- if .networkViewDistance }}
           - name: NETWORK_VIEW_DISTANCE
             value: "{{ .networkViewDistance }}"
@@ -144,6 +140,10 @@ spec:
         {{- if .queueMaxSize }}
           - name: QUEUE_MAX_SIZE
             value: "{{ .queueMaxSize }}"
+        {{- end }}
+        {{- if .additionalParameters }}
+          - name: ADDITIONAL_PARAMETERS
+            value: "{{ .additionalParameters }}"
         {{- end }}
         {{- end }}
         ports:

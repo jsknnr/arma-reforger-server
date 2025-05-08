@@ -31,7 +31,7 @@ config:
   rconWhitelist: ""
   a2sPort: 17777
   serverConfigFile: "ServerConfig.json"
-  maxFps: 30
+  maxFps: 60
   maxPlayers: 64
   serverName: "Reforger Server"
   serverPassword: ""
@@ -42,10 +42,10 @@ config:
   crossplatform: true
   supportedPlatforms: "PLATFORM_PC,PLATFORM_XBL,PLATFORM_PSN"
   serverMaxViewDistance: 1600
-  serverMinGrassDistance: 0
   networkViewDistance: 1500
   disableThirdPerson: false
   fastValidation: true
   battleye: true
   modsJsonB64: ""
   queueMaxSize: 30
+  additionalParameters: ""

@@ -12,10 +12,18 @@ config_editor () {
 
 # Function to start Arma Reforger Dedicated Server
 start () {
-    launch_args="-config ${REFORGER_PATH}/config/${SERVER_CONFIG_FILE} -profile ${REFORGER_PATH}/profile -addonDownloadDir ${REFORGER_PATH}/workshop -addonsDir ${REFORGER_PATH}/workshop -backendlog -nothrow -maxFPS ${MAX_FPS} ${EXTRA_LAUNCH_ARGS}"
+    # Define initial launch parameters
+    LAUNCH_PARAMS=("-createDB" "-config" "${REFORGER_PATH}/config/${SERVER_CONFIG_FILE}" "-profile" "${REFORGER_PATH}/profile" "-addonDownloadDir" "${REFORGER_PATH}/workshop" "-addonsDir" "${REFORGER_PATH}/workshop" "-backendlog" "-nothrow" "-maxFPS" "${MAX_FPS}")
 
+    # Check if we have additional parameters and add to launch params
+    if [ -n "${ADDITIONAL_PARAMETERS}" ]; then
+      set -- $ADDITIONAL_PARAMETERS
+      LAUNCH_PARAMS+=("$@")
+    fi
+
+    cd "${REFORGER_PATH}" || exit 1
     echo "$(timestamp) INFO: Starting Arma Reforger Dedicated Server"
-    "${REFORGER_PATH}/ArmaReforgerServer" "${launch_args}"
+    "${REFORGER_PATH}/ArmaReforgerServer" "${LAUNCH_PARAMS[@]}"
 }
 
 # Function to update Arma Reforger Dedicated Server
@@ -26,6 +34,21 @@ update() {
 
 # Function to edit server configuration
 modify_server_config () {
+  # Validate that our config paths all exist
+  if [ ! -f "${REFORGER_PATH}/config" ]; then
+    mkdir "${REFORGER_PATH}/config"
+  fi
+
+  if [ ! -f "${REFORGER_PATH}/profile" ]; then
+    mkdir "${REFORGER_PATH}/profile"
+  fi
+
+  if [ ! -f "${REFORGER_PATH}/workshop" ]; then
+    mkdir "${REFORGER_PATH}/workshop"
+  fi
+
+  # Check if the server configuration file exists
+  # If it doesn't exist, copy the example server configuration file to the config directory
   if [ ! -f "${REFORGER_PATH}/config/${SERVER_CONFIG_FILE}" ]; then
     echo "$(timestamp) WARN: Server configuration file not found at ${REFORGER_PATH}/config/${SERVER_CONFIG_FILE}"
     echo "$(timestamp) INFO: Creating new server configuration file"
@@ -140,10 +163,6 @@ modify_server_config () {
     config_editor -c "${CONFIG_PATH}" -k "game.gameProperties.serverMaxViewDistance" -v "${SERVER_MAX_VIEW_DISTANCE}"
   fi
 
-  if [ -n "${SERVER_MIN_GRASS_DISTANCE}" ]; then
-    config_editor -c "${CONFIG_PATH}" -k "game.gameProperties.serverMinGrassDistance" -v "${SERVER_MIN_GRASS_DISTANCE}"
-  fi
-
   if [ -n "${NETWORK_VIEW_DISTANCE}" ]; then
     config_editor -c "${CONFIG_PATH}" -k "game.gameProperties.networkViewDistance" -v "${NETWORK_VIEW_DISTANCE}"
   fi
@@ -173,6 +192,9 @@ modify_server_config () {
   if [ -n "${QUEUE_MAX_SIZE}" ]; then
     config_editor -c "${CONFIG_PATH}" -k "operating.joinQueue.maxSize" -v "${QUEUE_MAX_SIZE}"
   fi
+
+  # Clean config of empty values so it will pass schema validation
+  config_editor -c "${CONFIG_PATH}" --sanitize
 }
 
 # Call to update, modify config, and start the server
