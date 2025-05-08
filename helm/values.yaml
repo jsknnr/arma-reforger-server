@@ -1,0 +1,51 @@
+image:
+  repository: sknnr/arma-reforger-server
+  tag: latest
+  pullPolicy: Always
+
+service:
+  type: LoadBalancer
+  externalIPs: []
+  annotations: {}
+
+resources:
+  requests:
+    memory: 12G
+    cpu: 6.0
+
+volumes:
+  serverPVC:
+    size: 50Gi
+  dataPVC:
+    size: 50Gi
+  storageClassName: ""
+
+config:
+  publicAddress: ""
+  bindAddress: "0.0.0.0"
+  gamePort: 2001
+  rconPort: 19999
+  rconPassword: ""
+  rconAddress: "0.0.0.0"
+  rconBlacklist: ""
+  rconWhitelist: ""
+  a2sPort: 17777
+  serverConfigFile: "ServerConfig.json"
+  maxFps: 30
+  maxPlayers: 64
+  serverName: "Reforger Server"
+  serverPassword: ""
+  admins: ""
+  adminPassword: ""
+  scenarioId: "{ECC61978EDCC2B5A}Missions/23_Campaign.conf"
+  visible: true
+  crossplatform: true
+  supportedPlatforms: "PLATFORM_PC,PLATFORM_XBL,PLATFORM_PSN"
+  serverMaxViewDistance: 1600
+  serverMinGrassDistance: 0
+  networkViewDistance: 1500
+  disableThirdPerson: false
+  fastValidation: true
+  battleye: true
+  modsJsonB64: ""
+  queueMaxSize: 30

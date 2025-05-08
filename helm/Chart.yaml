@@ -1,0 +1,9 @@
+apiVersion: v1
+name: arma-reforger-server
+version: 1.0.0
+description: Arma Reforger dedicated server.
+keywords:
+- game
+- server
+- arma
+home: https://github.com/jsknnr/arma-reforger-server
