@@ -26,7 +26,8 @@ def update_config_file(file_path: str, key: str, new_value: str) -> None:
             new_value = True
         elif new_value.lower() == 'false':
             new_value = False
-        elif new_value.isdigit():
+        # unless key is game.admins as steamIDs could be converted if there is just one.
+        elif new_value.isdigit() and key != 'game.admins':
             new_value = int(new_value)
 
         # Traverse the configuration dictionary to find and validate the key
