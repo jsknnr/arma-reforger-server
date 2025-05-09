@@ -59,11 +59,11 @@ spec:
         {{- end }}
         {{- if .rconBlacklist }}
           - name: RCON_BLACKLIST
-            value: {{ .rconBlacklist | squote }}
+            value: {{ .rconBlacklist | quote }}
         {{- end }}
         {{- if .rconWhitelist }}
           - name: RCON_WHITELIST
-            value: {{ .rconWhitelist | squote }}
+            value: {{ .rconWhitelist | quote }}
         {{- end }}
         {{- if .a2sPort }}
           - name: A2S_PORT
@@ -91,7 +91,7 @@ spec:
         {{- end }}
         {{- if .admins }}
           - name: ADMINS
-            value: "{{ .admins }}"
+            value: "{{ .admins | quote }}"
         {{- end }}
         {{- if .adminPassword }}
           - name: ADMIN_PASSWORD
@@ -111,7 +111,7 @@ spec:
         {{- end }}
         {{- if .supportedPlatforms }}
           - name: SUPPORTED_PLATFORMS
-            value: {{ .supportedPlatforms | squote }}
+            value: {{ .supportedPlatforms | quote }}
         {{- end }}
         {{- if .serverMaxViewDistance }}
           - name: SERVER_MAX_VIEW_DISTANCE
