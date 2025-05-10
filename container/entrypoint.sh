@@ -10,6 +10,52 @@ config_editor () {
   python3 /home/steam/config_editor.py "$@"
 }
 
+# Function to initialize config dirs, check for config files, and validate mod env variables
+init () {
+  # Validate that our config paths all exist
+  if [ ! -f "${REFORGER_PATH}/config" ]; then
+    mkdir "${REFORGER_PATH}/config"
+  fi
+
+  if [ ! -f "${REFORGER_PATH}/profile" ]; then
+    mkdir "${REFORGER_PATH}/profile"
+  fi
+
+  if [ ! -f "${REFORGER_PATH}/workshop" ]; then
+    mkdir "${REFORGER_PATH}/workshop"
+  fi
+
+  # Check if the server configuration file exists
+  # If it doesn't exist, copy the example server configuration file to the config directory
+  if [ ! -f "${REFORGER_PATH}/config/${SERVER_CONFIG_FILE}" ]; then
+    echo "$(timestamp) WARN: Server configuration file not found at ${REFORGER_PATH}/config/${SERVER_CONFIG_FILE}"
+    echo "$(timestamp) INFO: Creating new server configuration file"
+    cp /home/steam/example_server_config.json "${REFORGER_PATH}/config/${SERVER_CONFIG_FILE}"
+  else
+    echo "$(timestamp) INFO: Server configuration file found at ${REFORGER_PATH}/config/${SERVER_CONFIG_FILE}"
+  fi
+
+  # Perform some validation on our MODS environment vars
+  # MODS_JSON_FILE and MODS_JSON_B64 are mutually exclusive
+  if [ -n "${MODS_JSON_FILE}" ] && [ -n "${MODS_JSON_B64}" ]; then
+    echo "$(timestamp) ERROR: MODS_JSON_FILE and MODS_JSON_B64 are mutually exclusive, use one or the other"
+    exit 1
+  fi
+  # Check if MODS_JSON_FILE is set and the file exists
+  if [ -n "${MODS_JSON_FILE}" ] && [ ! -f "${REFORGER_PATH}/config/${MODS_JSON_FILE}" ]; then
+    echo "$(timestamp) ERROR: Mods JSON file not found at ${REFORGER_PATH}/config/${MODS_JSON_FILE}"
+    echo "Ensure that the file is mounted correctly to ${REFORGER_PATH}/config and that MODS_JSON_FILE matches the filename."
+    exit 1
+  fi
+  # Check if MODS_JSON_B64 is set and is a valid base64 string
+  if [ -n "${MODS_JSON_B64}" ]; then
+    if ! echo "${MODS_JSON_B64}" | base64 --decode &>/dev/null; then
+      echo "$(timestamp) ERROR: MODS_JSON_B64 is not valid base64"
+      exit 1
+    fi
+  fi
+}
+
 # Function to start Arma Reforger Dedicated Server
 start () {
     # Define initial launch parameters
@@ -34,54 +80,10 @@ update() {
 
 # Function to edit server configuration
 modify_server_config () {
-  # Validate that our config paths all exist
-  if [ ! -f "${REFORGER_PATH}/config" ]; then
-    mkdir "${REFORGER_PATH}/config"
-  fi
-
-  if [ ! -f "${REFORGER_PATH}/profile" ]; then
-    mkdir "${REFORGER_PATH}/profile"
-  fi
-
-  if [ ! -f "${REFORGER_PATH}/workshop" ]; then
-    mkdir "${REFORGER_PATH}/workshop"
-  fi
-
-  # Check if the server configuration file exists
-  # If it doesn't exist, copy the example server configuration file to the config directory
-  if [ ! -f "${REFORGER_PATH}/config/${SERVER_CONFIG_FILE}" ]; then
-    echo "$(timestamp) WARN: Server configuration file not found at ${REFORGER_PATH}/config/${SERVER_CONFIG_FILE}"
-    echo "$(timestamp) INFO: Creating new server configuration file"
-    cp /home/steam/example_server_config.json "${REFORGER_PATH}/config/${SERVER_CONFIG_FILE}"
-  else
-    echo "$(timestamp) INFO: Server configuration file found at ${REFORGER_PATH}/config/${SERVER_CONFIG_FILE}"
-  fi
-
   # Path to server configuration json file
   CONFIG_PATH="${REFORGER_PATH}/config/${SERVER_CONFIG_FILE}"
 
   echo "$(timestamp) INFO: Updating configuration file from environment variables"
-
-  # Perform some validation on our MODS environment vars
-
-  # MODS_JSON_FILE and MODS_JSON_B64 are mutually exclusive
-  if [ -n "${MODS_JSON_FILE}" ] && [ -n "${MODS_JSON_B64}" ]; then
-    echo "$(timestamp) ERROR: MODS_JSON_FILE and MODS_JSON_B64 are mutually exclusive, use one or the other"
-    exit 1
-  fi
-  # Check if MODS_JSON_FILE is set and the file exists
-  if [ -n "${MODS_JSON_FILE}" ] && [ ! -f "${REFORGER_PATH}/config/${MODS_JSON_FILE}" ]; then
-    echo "$(timestamp) ERROR: Mods JSON file not found at ${REFORGER_PATH}/config/${MODS_JSON_FILE}"
-    echo "Ensure that the file is mounted correctly to ${REFORGER_PATH}/config and that MODS_JSON_FILE matches the filename."
-    exit 1
-  fi
-  # Check if MODS_JSON_B64 is set and is a valid base64 string
-  if [ -n "${MODS_JSON_B64}" ]; then
-    if ! echo "${MODS_JSON_B64}" | base64 --decode &>/dev/null; then
-      echo "$(timestamp) ERROR: MODS_JSON_B64 is not valid base64"
-      exit 1
-    fi
-  fi
 
   # Begin checking for environment variables and updating the config file
 
@@ -199,6 +201,7 @@ modify_server_config () {
 
 # Call to update, modify config, and start the server
 update
+init
 modify_server_config
 start
  
