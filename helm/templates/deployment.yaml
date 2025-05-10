@@ -99,7 +99,7 @@ spec:
         {{- end }}
         {{- if .scenarioId }}
           - name: SCENARIO_ID
-            value: {{ .scenarioId | squote }}
+            value: "{{ .scenarioId }}"
         {{- end }}
         {{- if .visible }}
           - name: VISIBLE
